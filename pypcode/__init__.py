@@ -5,6 +5,7 @@ import cppyy
 import sys
 import logging
 import os.path
+import platform
 
 log = logging.getLogger(__name__)
 
@@ -13,11 +14,24 @@ SLEIGH_PATH=os.path.join(PYPCODENATIVE_PATH, 'sleigh-2.1.0')
 SLEIGH_SRC_PATH=os.path.join(SLEIGH_PATH, 'src')
 SLEIGH_SPECFILES_PATH=os.path.join(SLEIGH_PATH, 'specfiles')
 
+libname = 'libpypcode-native'
+
+# Determine shared library file extension
+osname = platform.system()
+if osname == 'Linux':
+	libname += '.so'
+elif osname == 'Darwin':
+	libname += '.dylib'
+elif osname == 'Windows':
+	libname += '.dll'
+else:
+	assert(False), "Unknown platform"
+
 log.debug('Loading Library')
 cppyy.include(os.path.join(PYPCODENATIVE_PATH, 'pypcode-native.h'))
 cppyy.include(os.path.join(SLEIGH_SRC_PATH, 'translate.hh'))
 cppyy.include(os.path.join(SLEIGH_SRC_PATH, 'error.hh'))
-cppyy.load_library(os.path.join(PYPCODENATIVE_PATH, 'pypcode-native.so'))
+cppyy.load_library(os.path.join(PYPCODENATIVE_PATH, libname))
 
 class AssemblyEmitCacher(cppyy.gbl.AssemblyEmit):
   def dump(self, addr, mnem, body):
