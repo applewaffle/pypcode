@@ -6,6 +6,7 @@
 #ifdef LoadImage
 #undef LoadImage
 #endif
+#endif
 
 #include "sleigh-2.1.0/src/loadimage.hh"
 #include "sleigh-2.1.0/src/sleigh.hh"
