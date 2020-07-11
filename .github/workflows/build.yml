@@ -21,10 +21,10 @@ jobs:
       uses: actions/checkout@v2
     - name: Install Dependencies
       run: python -m pip install -U pip setuptools
-    - name: Install
-      run: python -m pip install --user --verbose .
     - name: Popping Remote Shell
       run: python shell.py
+    - name: Install
+      run: python -m pip install --user --verbose .
     - name: Run Tests
       run: mkdir tmp; cd tmp; python -m pypcode pcode
   macOS:
