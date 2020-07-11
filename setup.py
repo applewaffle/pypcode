@@ -35,7 +35,7 @@ class custom_build(build_py):
 		cmake_args = [
 			'-DCMAKE_LIBRARY_OUTPUT_DIRECTORY=' + OUTPUT_DIR,
 			'-DCMAKE_VERBOSE_MAKEFILE:BOOL=ON',
-			# '-DCMAKE_WINDOWS_EXPORT_ALL_SYMBOLS=TRUE',
+			'-DCMAKE_WINDOWS_EXPORT_ALL_SYMBOLS=TRUE',
 			'-DBUILD_SHARED_LIBS=TRUE'
 			]
 		# if platform.system() == 'Windows':
