@@ -23,7 +23,7 @@ from setuptools.command.build_py import build_py
 
 SOURCE_DIR = os.path.abspath(os.path.dirname(__file__))
 LIB_SOURCE_DIR = os.path.join(SOURCE_DIR, 'pypcode', 'pypcode-native')
-OUTPUT_DIR = os.path.join(SOURCE_DIR, 'pypcode')
+OUTPUT_DIR = os.path.join(SOURCE_DIR, 'pypcode', 'pypcode-native')
 
 class custom_build(build_py):
 	def run(self):

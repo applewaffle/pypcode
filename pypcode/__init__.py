@@ -10,20 +10,19 @@ import platform
 log = logging.getLogger(__name__)
 
 PYPCODENATIVE_PATH=os.path.join(os.path.dirname(__file__), 'pypcode-native')
-SLEIGH_PATH=os.path.join(PYPCODENATIVE_PATH, 'sleigh-2.1.0')
+SLEIGH_PATH=os.path.join(PYPCODENATIVE_PATH)
 SLEIGH_SRC_PATH=os.path.join(SLEIGH_PATH, 'src')
 SLEIGH_SPECFILES_PATH=os.path.join(SLEIGH_PATH, 'specfiles')
-
-libname = 'libpypcode-native'
+PYPCODENATIVE_LIBNAME = 'libpypcode-native'
 
 # Determine shared library file extension
 osname = platform.system()
 if osname == 'Linux':
-	libname += '.so'
+	PYPCODENATIVE_LIBNAME += '.so'
 elif osname == 'Darwin':
-	libname += '.dylib'
+	PYPCODENATIVE_LIBNAME += '.dylib'
 elif osname == 'Windows':
-	libname += '.dll'
+	PYPCODENATIVE_LIBNAME += '.dll'
 else:
 	assert(False), "Unknown platform"
 
@@ -31,7 +30,7 @@ log.debug('Loading Library')
 cppyy.include(os.path.join(PYPCODENATIVE_PATH, 'pypcode-native.h'))
 cppyy.include(os.path.join(SLEIGH_SRC_PATH, 'translate.hh'))
 cppyy.include(os.path.join(SLEIGH_SRC_PATH, 'error.hh'))
-cppyy.load_library(os.path.join(PYPCODENATIVE_PATH, libname))
+cppyy.load_library(os.path.join(PYPCODENATIVE_PATH, PYPCODENATIVE_LIBNAME))
 
 class AssemblyEmitCacher(cppyy.gbl.AssemblyEmit):
   def dump(self, addr, mnem, body):
