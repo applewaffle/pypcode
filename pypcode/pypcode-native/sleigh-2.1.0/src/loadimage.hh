@@ -19,6 +19,13 @@
 #ifndef __CPUI_LOADIMAGE__
 #define __CPUI_LOADIMAGE__
 
+// hax
+#ifdef _WINDOWS
+#ifdef LoadImage // On Windows, LoadImage is defined as a macro conflicts
+#undef LoadImage
+#endif
+#endif
+
 #include "address.hh"
 
 /// \brief Exception indicating data was not available
