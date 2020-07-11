@@ -4,6 +4,11 @@ import sys
 import logging
 from pypcode import *
 
+# DEBUG
+import cppyy.ll
+cppyy.ll.set_signals_as_exception(True)
+# /DEBUG
+
 log = logging.getLogger(__name__)
 logging.basicConfig(level=logging.DEBUG, format='[%(name)s:%(levelname)s] %(message)s')
 
