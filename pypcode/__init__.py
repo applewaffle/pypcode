@@ -9,11 +9,11 @@ import platform
 
 log = logging.getLogger(__name__)
 
-PYPCODENATIVE_PATH=os.path.join(os.path.dirname(__file__), 'pypcode-native')
-SLEIGH_PATH=os.path.join(PYPCODENATIVE_PATH)
-SLEIGH_SRC_PATH=os.path.join(SLEIGH_PATH, 'src')
-SLEIGH_SPECFILES_PATH=os.path.join(SLEIGH_PATH, 'specfiles')
+PYPCODENATIVE_PATH = os.path.join(os.path.dirname(__file__), 'pypcode-native')
 PYPCODENATIVE_LIBNAME = 'libpypcode-native'
+SLEIGH_PATH = os.path.join(PYPCODENATIVE_PATH, 'sleigh-2.1.0')
+SLEIGH_SRC_PATH = os.path.join(SLEIGH_PATH, 'src')
+SLEIGH_SPECFILES_PATH = os.path.join(SLEIGH_PATH, 'specfiles')
 
 # Determine shared library file extension
 osname = platform.system()
