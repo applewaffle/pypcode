@@ -19,9 +19,10 @@
 #ifndef __CPUI_LOADIMAGE__
 #define __CPUI_LOADIMAGE__
 
-// hax
 #ifdef _WINDOWS
-#ifdef LoadImage // On Windows, LoadImage is defined as a macro conflicts
+// XXX: On Windows, LoadImage is defined as a macro which conflicts with name
+// of the class declared in this file. For now, just undefine the macro.
+#ifdef LoadImage
 #undef LoadImage
 #endif
 #endif
