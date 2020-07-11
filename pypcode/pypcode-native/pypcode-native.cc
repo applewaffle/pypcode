@@ -1,5 +1,19 @@
 #include "pypcode-native.h"
 
+#include <stdio.h>
+
+void print_something(const char *s)
+{
+  fprintf(stderr, "Printing something! %s\n", s);
+}
+
+
+int return_something(void)
+{
+  fprintf(stderr, "Returning something!\n");
+  return 100;
+}
+
 // This is the only important method for the LoadImage. It returns bytes from the static array
 // depending on the address range requested
 void SimpleLoadImage::loadFill(uint1 *ptr,int4 size,const Address &addr)

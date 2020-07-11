@@ -63,6 +63,12 @@ def main():
   start = 0x80483b4
   stop = 0x804846c
 
+  print('About to print something', flush=True)
+  print_something(b'testing, 123!')
+  x = return_something()
+  print(x, flush=True)
+
+
   log.debug('Loading image')
   loader = SimpleLoadImage(start, code, len(code))
 

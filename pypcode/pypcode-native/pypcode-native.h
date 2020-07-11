@@ -4,6 +4,9 @@
 #include "sleigh-2.1.0/src/loadimage.hh"
 #include "sleigh-2.1.0/src/sleigh.hh"
 
+void print_something(const char *s);
+int return_something(void);
+
 // This is a tiny LoadImage class which feeds the executable bytes to the translator
 class SimpleLoadImage : public LoadImage {
   uintb baseaddr;

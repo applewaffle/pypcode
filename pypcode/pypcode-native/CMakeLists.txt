@@ -11,6 +11,7 @@ else()
     add_compile_options(-m64 -O2 -Wall -Wno-sign-compare -D__TERMINAL__)
 endif()
 
+
 add_library(pypcode-native SHARED
 	pypcode-native.cc
 
@@ -38,3 +39,5 @@ add_library(pypcode-native SHARED
 	sleigh-2.1.0/src/emulate.cc
 	sleigh-2.1.0/src/opbehavior.cc
 	)
+
+set_target_properties(pypcode-native PROPERTIES POSITION_INDEPENDENT_CODE ON)
