@@ -120,6 +120,8 @@ typedef uint8 uintp;
 
 #else // _WIN32 assumed
 
+FAIL
+
 #define HOST_ENDIAN 0
 typedef unsigned long uintm;
 typedef long intm;
