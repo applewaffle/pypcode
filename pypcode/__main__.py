@@ -58,12 +58,12 @@ def main():
   start = 0x80483b4
   stop = 0x804846c
 
+  log.debug('Loading image')
+  loader = SimpleLoadImage(start, code, len(code))
+
   # Set up the context object
   log.debug('Creating context')
   context = ContextInternal()
-
-  log.debug('Loading image')
-  loader = SimpleLoadImage(start, code, len(code))
 
   # Set up the assembler/pcode-translator
   log.debug('Setting up translator')

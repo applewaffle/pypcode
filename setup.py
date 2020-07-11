@@ -35,16 +35,18 @@ class custom_build(build_py):
 		cmake_args = [
 			'-DCMAKE_LIBRARY_OUTPUT_DIRECTORY=' + OUTPUT_DIR,
 			]
+		if platform.system() == 'Windows':
+			cmake_args += ['-G', 'MinGW Makefiles']
 		if not os.path.exists(OUTPUT_DIR):
 			os.makedirs(OUTPUT_DIR)
 		subprocess.check_call(['cmake', '.'] + cmake_args, cwd=LIB_SOURCE_DIR)
 		subprocess.check_call(['cmake', '--build', '.'], cwd=LIB_SOURCE_DIR)
 
 		# Windows does things a little differently...
-		if platform.system() == 'Windows':
-			src = os.path.join(LIB_SOURCE_DIR, 'Debug', 'pypcode-native.dll')
+		win_lib_output = os.path.join(LIB_SOURCE_DIR, 'Debug', 'pypcode-native.dll')
+		if platform.system() == 'Windows' and os.path.exists(win_lib_output):
 			dest = os.path.join(OUTPUT_DIR, 'libpypcode-native.dll')
-			shutil.copyfile(src, dest)
+			shutil.copyfile(win_lib_output, dest)
 
 		return super().run()
 
