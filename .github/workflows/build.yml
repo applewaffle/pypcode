@@ -13,7 +13,7 @@ jobs:
     - name: Install
       run: python3 -m pip install --user .
     - name: Run Tests
-      run: mkdir tmp; cd tmp; python3 -c "import pypcode"
+      run: mkdir tmp; cd tmp; python3 -m pypcode pcode
   Windows:
     runs-on: windows-latest
     steps:
@@ -24,7 +24,7 @@ jobs:
     - name: Install
       run: python -m pip install --user --verbose .
     - name: Run Tests
-      run: mkdir tmp; cd tmp; python -c "import pypcode"
+      run: mkdir tmp; cd tmp; python -m pypcode pcode
   macOS:
     runs-on: macOS-latest
     steps:
@@ -35,4 +35,4 @@ jobs:
     - name: Install
       run: python3 -m pip install --user --verbose .
     - name: Run Tests
-      run: mkdir tmp; cd tmp; python3 -c "import pypcode"
+      run: mkdir tmp; cd tmp; python3 -m pypcode pcode
