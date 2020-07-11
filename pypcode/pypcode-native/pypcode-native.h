@@ -1,6 +1,12 @@
 #ifndef PYPCODE_NATIVE_H
 #define PYPCODE_NATIVE_H
 
+// hax
+#ifdef _WINDOWS
+#ifdef LoadImage
+#undef LoadImage
+#endif
+
 #include "sleigh-2.1.0/src/loadimage.hh"
 #include "sleigh-2.1.0/src/sleigh.hh"
 
