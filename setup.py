@@ -34,6 +34,7 @@ class custom_build(build_py):
 
 		cmake_args = [
 			'-DCMAKE_LIBRARY_OUTPUT_DIRECTORY=' + OUTPUT_DIR,
+			'-DCMAKE_VERBOSE_MAKEFILE:BOOL=ON'
 			]
 		if platform.system() == 'Windows':
 			cmake_args += ['-G', 'MinGW Makefiles']

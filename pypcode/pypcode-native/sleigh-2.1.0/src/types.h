@@ -101,9 +101,9 @@ typedef char int1;
 typedef uint8 uintp;
 #endif
 
-#if defined(_WINDOWS)
+#if defined(_WINDOWS) || defined(__MINGW32__) || defined(__MINGW64__)
 
-#if defined(_WIN64)
+#if defined(_WIN64) || defined(__MINGW64__)
 
 #define HOST_ENDIAN 0
 typedef unsigned int uintm;
