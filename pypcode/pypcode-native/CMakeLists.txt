@@ -8,7 +8,7 @@ if (MSVC)
 else()
     # lots of warnings and all warnings as errors
     # add_compile_options(-Wall -Wextra -pedantic -Werror)
-    add_compile_options(-O2 -Wall -Wno-sign-compare -D__TERMINAL__)
+    add_compile_options(-m64 -O2 -Wall -Wno-sign-compare -D__TERMINAL__)
 endif()
 
 add_library(pypcode-native SHARED
