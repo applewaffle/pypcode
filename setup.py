@@ -36,9 +36,9 @@ class custom_build(build_py):
 			'-DCMAKE_LIBRARY_OUTPUT_DIRECTORY=' + OUTPUT_DIR,
 			'-DCMAKE_VERBOSE_MAKEFILE:BOOL=ON',
 			]
-		if platform.system() == 'Windows':
-			cmake_args += ['-G', 'MinGW Makefiles']
-			cmake_args += ['-DCMAKE_CXX_FLAGS="-D_WINDOWS=1 -D_WIN64=1"']
+		# if platform.system() == 'Windows':
+			# cmake_args += ['-G', 'MinGW Makefiles']
+			# cmake_args += ['-DCMAKE_CXX_FLAGS="-D_WINDOWS=1 -D_WIN64=1"']
 		if not os.path.exists(OUTPUT_DIR):
 			os.makedirs(OUTPUT_DIR)
 		subprocess.check_call(['cmake', '.'] + cmake_args, cwd=LIB_SOURCE_DIR)
