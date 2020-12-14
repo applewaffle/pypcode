@@ -13,11 +13,12 @@ INCLUDES=-I./src
 
 LNK=src/libsla.a
 
+sleighexample:	sleighexample.o
+	$(CXX) $(DBG_CXXFLAGS) -o sleighexample sleighexample.o $(LNK)
+
 sleighexample.o:	sleighexample.cc
 	$(CXX) -c $(DBG_CXXFLAGS) $(INCLUDES) $< -o $@
 
-sleighexample:	sleighexample.o
-	$(CXX) $(DBG_CXXFLAGS) -o sleighexample sleighexample.o $(LNK)
 
 clean:
 	rm -rf *.o sleighexample

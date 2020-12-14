@@ -165,7 +165,9 @@ static void dumpPcode(Translate &trans)
   int4 length;			// Number of bytes of each machine instruction
 
   Address addr(trans.getDefaultSpace(),0x80483b4); // First address to translate
-  Address lastaddr(trans.getDefaultSpace(),0x80483bf); // Last address
+  //Address lastaddr(trans.getDefaultSpace(),0x80483bf); // Last address
+  Address lastaddr(trans.getDefaultSpace(),0x804846c); // Last address
+
 
   while(addr < lastaddr) {
     cout << "--- ";
