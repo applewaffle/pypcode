@@ -109,7 +109,7 @@ class AssemblyRaw : public AssemblyEmit {
 		}
 };
 
-static void dumpAssembly(Translate &trans)
+static void dumpAssembly(Translate &trans, ContextInternal &ctx, unsigned base_addr, size_t sz)
 
 { // Print disassembly of binary code
 	AssemblyRaw assememit;	// Set up the disassembly dumper
@@ -118,8 +118,8 @@ static void dumpAssembly(Translate &trans)
 	//Address addr(trans.getDefaultSpace(),0x80483b4); // First disassembly address
 	//Address lastaddr(trans.getDefaultSpace(),0x804846c); // Last disassembly address
 
-    Address addr(trans.getDefaultSpace(),0x00008f90); // First address to translate
-    Address lastaddr(trans.getDefaultSpace(),0x0000904e); // Last address
+    Address addr(trans.getDefaultSpace(),base_addr); // First address to translate
+    Address lastaddr(trans.getDefaultSpace(),base_addr+sz); // Last address
 
 	while(addr < lastaddr) {
 		length = trans.printAssembly(assememit,addr);
@@ -163,19 +163,16 @@ void PcodeRawOut::dump(const Address &addr,OpCode opc,VarnodeData *outvar,Varnod
 	cout << endl;
 }
 
-static void dumpPcode(Translate &trans, ContextInternal &ctx)
+static void dumpPcode(Translate &trans, ContextInternal &ctx, unsigned base_addr, size_t sz, bool isArm)
 
 { // Dump pcode translation of machine instructions
 	PcodeRawOut emit;		// Set up the pcode dumper
 	AssemblyRaw assememit;	// Set up the disassembly dumper
 	int4 length;			// Number of bytes of each machine instruction
 
-	//Address addr(trans.getDefaultSpace(),0x80483b4); // First address to translate
-    Address addr(trans.getDefaultSpace(),0x00008f90); // First address to translate
+    Address addr(trans.getDefaultSpace(),base_addr); // First address to translate
 
-	//Address lastaddr(trans.getDefaultSpace(),0x80483bf); // Last address
-	//Address lastaddr(trans.getDefaultSpace(),0x804846c); // Last address
-    Address lastaddr(trans.getDefaultSpace(),0x0000904e); // Last address
+    Address lastaddr(trans.getDefaultSpace(),base_addr+sz); // Last address
 
 
 	while(addr < lastaddr) {
@@ -183,8 +180,10 @@ static void dumpPcode(Translate &trans, ContextInternal &ctx)
 		length = trans.printAssembly(assememit,addr);
 		length = trans.oneInstruction(emit,addr); // Translate instruction
 		addr = addr + length;		// Advance to next instruction
-        //实验知,oneInstruction调用后,blx下一条指令会自动将ISA_MODE改成0,也就是arm,这回导致thumb被解析成arm出错,所以每条指令结束需要设置解析器模式
-        ctx.setVariable("ISA_MODE", addr, 1);
+        if (isArm) {
+            //实验知,oneInstruction调用后,blx下一条指令会自动将ISA_MODE改成0,也就是arm,这回导致thumb被解析成arm出错,所以每条指令结束需要设置解析器模式
+            ctx.setVariable("ISA_MODE", addr, 1);
+        }
         
 	}
 }
@@ -307,21 +306,32 @@ int main(int argc,char **argv)
 		return 2;
 	}
 	string action(argv[1]);
-
+    
+    bool isArm = true;
+    unsigned base_addr = 0;
+    uint1 *ins_buff = 0;
+    size_t buff_sz = 0;
+    string sleighfilename = "";
+    if (isArm) {
+        base_addr = 0x00008f90;
+        ins_buff = myprog_arm;
+        buff_sz = sizeof(myprog_arm);
+        sleighfilename = "specfiles/ARM8_le.sla";
+    }
+    else {
+        base_addr = 0x80483b4;
+        ins_buff = myprog;
+        buff_sz = sizeof(myprog);
+        sleighfilename = "specfiles/x86.sla";
+    }
+    
 	// Set up the loadimage
-	//MyLoadImage loader(0x80483b4,myprog,408);
-	MyLoadImage loader(0x00008f90,myprog_arm,sizeof(myprog_arm));
-
-	//  loader->open();
-	//    loader->adjustVma(adjustvma);
+	MyLoadImage loader(base_addr,ins_buff,buff_sz);
 
 	// Set up the context object
 	ContextInternal context;
 
 	// Set up the assembler/pcode-translator
-	//string sleighfilename = "specfiles/x86.sla";
-    string sleighfilename = "specfiles/ARM8_le.sla";
-
 	Sleigh trans(&loader,&context);
 
 	// Read sleigh file into DOM
@@ -329,83 +339,23 @@ int main(int argc,char **argv)
 	Element *sleighroot = docstorage.openDocument(sleighfilename)->getRoot();
 	docstorage.registerTag(sleighroot);
 	trans.initialize(docstorage); // Initialize the translator
-
+    
 	// Now that context symbol names are loaded by the translator
 	// we can set the default context
-    context.setVariableDefault("ISA_MODE", 1);
-    //context.setVariableDefault("TMode", 1);
-    //context.setVariableDefault("T", 1);
-	//context.setVariableDefault("addrsize",1); // Address size is 32-bit
-	//context.setVariableDefault("opsize",1); // Operand size is 32-bit
+    if (isArm)
+        context.setVariableDefault("ISA_MODE", 1);
+    else {
+        //x86
+        context.setVariableDefault("addrsize",1); // Address size is 32-bit
+        context.setVariableDefault("opsize",1); // Operand size is 32-bit
+    }
     if (action == "disassemble")
-		dumpAssembly(trans);
+		dumpAssembly(trans, context, base_addr, buff_sz);
 	else if (action == "pcode")
-		dumpPcode(trans, context);
+		dumpPcode(trans, context, base_addr, buff_sz, isArm);
 	else if (action == "emulate")
 		doEmulation(trans,loader);
 	else
 		cerr << "Unknown action: "+action << endl;
 }
 
-/*
-   Example Makefile
-
-   --# The C compiler
-   --CC=gcc
-   --CXX=g++
-   --
-   --# Debug flags
-   --DBG_CXXFLAGS=-g -Wall -Wno-sign-compare
-   --
-   --# Optimization flags
-   --OPT_CXXFLAGS=-O2 -Wall -Wno-sign-compare
-   --
-   --# libraries
-   --INCLUDES=-I./src
-   --
-   --LNK=src/libsla.a
-   --
-   --sleighexample.o:	sleighexample.cc
-   --	$(CXX) -c $(DBG_CXXFLAGS) $(INCLUDES) $< -o $@
-   --
-   --sleighexample:	sleighexample.o
-   --	$(CXX) $(DBG_CXXFLAGS) -o sleighexample sleighexample.o $(LNK)
-   --
-   --clean:
-   --	rm -rf *.o sleighexample
-   --
-
-   -a- Welcome to SLEIGH
-   -a-
-   -a- The SLEIGH library can be built by invoking the following
-   -a- from within the "src" directory.
-   -a-
-   -a-    make libsla.a
-   -a-
-   -a- or the debug target, libsla_dbg.a, can be built.
-   -a-
-   -a-
-   -a- The SLEIGH compiler can be built with:
-   -a-
-   -a-    make sleigh_opt
-   -a-
-   -a- or the debug target, sleigh_dbg, can be built instead.
-   -a-
-   -a-
-   -a- A tiny example application is provided in the source file
-   -a- "sleighexample.cc" in the root directory.  It demonstrates
-   -a- disassembly, pcode translation, and emulation using the SLEIGH
-   -a- library. It can be built with:
-   -a-
-   -a-    make sleighexample
-   -a-
-   -a- The "sleighexample" application expects a the x86 specification
-   -a- file, named "x86.sla", to be in the "specfiles" directory.
-   -a- Or, you can easily change the hard coded string in main.
-   -a-
-   -a- The "sleighexample" application contains a tiny example of how to derive
-   -a- a tailored LoadImage class in order to get executable bytes to the SLEIGH
-   -a- translator and your application.  A more sophisticated example that wraps
-   -a- GNU's Binary File Descriptor library (libbfd) is available in the files
-   -a- "loadimage_bfd.hh" and "loadimage_bfd.cc"
-   */
