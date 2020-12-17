@@ -17,10 +17,11 @@
 // Dump the raw pcode instructions
 
 // Root include for parsing using SLEIGH
-#include "loadimage.hh"
-#include "sleigh.hh"
-#include "emulate.hh"
+#include <loadimage.hh>
+#include <sleigh.hh>
+#include <emulate.hh>
 #include <iostream>
+#include <llvm/IR/IRBuilder.h>
 
 // These are the bytes for an example x86 binary
 // These bytes are loaded at address 0x80483b4
@@ -269,7 +270,7 @@ static void doEmulation(Translate &trans,LoadImage &loader)
 	MemoryHashOverlay registerstate(trans.getSpaceByName("register"),8,4096,4096,(MemoryBank *)0);
 	MemoryHashOverlay tmpstate(trans.getUniqueSpace(),8,4096,4096,(MemoryBank *)0);
 
-	MemoryState memstate(&trans);	// Instantiate the memory state object
+    MemoryState memstate(&trans);	// Instantiate the memory state object
 	memstate.setMemoryBank(&ramstate);
 	memstate.setMemoryBank(&registerstate);
 	memstate.setMemoryBank(&tmpstate);
